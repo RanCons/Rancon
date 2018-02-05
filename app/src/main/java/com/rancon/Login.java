@@ -71,6 +71,8 @@ public class Login extends AppCompatActivity {
                 });
                 Toast.makeText(Login.this, "Success", Toast.LENGTH_SHORT).show();
                 Log.d("test",loginResult.getAccessToken().getUserId());
+                Intent i = new Intent(Login.this, MainActivity.class);
+                startActivity(i);
             }
 
             @Override
