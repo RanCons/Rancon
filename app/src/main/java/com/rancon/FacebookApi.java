@@ -25,17 +25,6 @@ public class FacebookApi {
     }
     public void getFriendsList() {
         AccessToken aT = AccessToken.getCurrentAccessToken();
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                aT,
-                "/me/friends",
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        Log.e("result", response.toString());
-                    }
-                });
-
-        request.executeAsync();
 
 
     }
