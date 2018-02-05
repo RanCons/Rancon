@@ -32,7 +32,6 @@ public class MapHelper extends AsyncTask {
     String id;
     UserData tempUser;
     List<String> recipientUidList = new ArrayList<>();
-    List<UserData> userDataList = new ArrayList<>();
     List<String> nameList = new ArrayList<>();
     List<String> locationList = new ArrayList<>();
     List<Bitmap> pictureList = new ArrayList<>();
@@ -88,6 +87,9 @@ public class MapHelper extends AsyncTask {
                     }
                     Log.e("TEST",AccessToken.getCurrentAccessToken().getToken());
                 }
+                tempUser.setNameList(nameList);
+                tempUser.setLocationList(locationList);
+                tempUser.setPictureList(pictureList);
             }
 
             @Override
