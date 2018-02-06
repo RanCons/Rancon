@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +20,15 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.SendButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +45,9 @@ public class SendCard extends AppCompatActivity {
     RecyclerView friendRecycler;
     List<String> friendNameList = new ArrayList<>();
     List<String> friendIdList = new ArrayList<>();
-
+    SendButton sendButton;
     friendAdapter friendAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +56,33 @@ public class SendCard extends AppCompatActivity {
         friendRecycler.setLayoutManager(new LinearLayoutManager(this));
         friendAdapter = new friendAdapter(this);
         dwnFriendList();
-        Log.e("fasddsa","sdfsad");
+
+
+        sendButton = (SendButton) findViewById(R.id.sendButton);
+        CallbackManager callbackManager = CallbackManager.Factory.create();
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+        sendButton.setShareContent(content);
+        sendButton.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Toast.makeText(SendCard.this, "Success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(SendCard.this, "Cancelled", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(SendCard.this, "Error", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
 
     }
 
@@ -68,14 +102,14 @@ public class SendCard extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final friendHolder holder, final int position) {
-            Log.e("TEST",""+position);
+            Log.e("TEST", "" + position);
             holder.tV.setText(friendNameList.get(position));
             holder.iV.setProfileId(friendIdList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            Log.e("TEST12321",""+friendNameList.size());
+            Log.e("TEST12321", "" + friendNameList.size());
             return friendNameList.size();
         }
     }
