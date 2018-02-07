@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,6 +30,11 @@ import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.SendButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,6 +111,29 @@ public class SendCard extends AppCompatActivity {
             Log.e("TEST", "" + position);
             holder.tV.setText(friendNameList.get(position));
             holder.iV.setProfileId(friendIdList.get(position));
+            holder.cV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String  userId = AccessToken.getCurrentAccessToken().getUserId();
+                    final DatabaseReference ref =  FirebaseDatabase.getInstance().getReference().child("users");
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            DatabaseReference uu =  ref.child(friendIdList.get(position)).child("cardIds");
+                            DatabaseReference u1 = uu.push();
+                        //    u1.setValue(userId + "a");//add card Id
+                            DatabaseReference cardsRef =  FirebaseDatabase.getInstance().getReference().child("cards");
+                          //  DatabaseReference c1 = cardsRef.child(userId + "a");//add card ID
+                            //DatabaseReference ca1 = c1.push();
+                         //   ca1.setValue(friendIdList.get(position));
+                            }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
+            });
         }
 
         @Override
@@ -117,9 +146,11 @@ public class SendCard extends AppCompatActivity {
     public class friendHolder extends RecyclerView.ViewHolder {
         TextView tV;
         ProfilePictureView iV;
+        CardView cV;
 
         public friendHolder(View itemView) {
             super(itemView);
+            cV = (CardView) itemView.findViewById(R.id.friend_card);
             tV = (TextView) itemView.findViewById(R.id.friend_name);
             iV = (ProfilePictureView) itemView.findViewById(R.id.profile_pic);
         }

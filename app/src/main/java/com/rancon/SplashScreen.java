@@ -14,9 +14,8 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        Intent i = new Intent(SplashScreen.this, SendCard.class);
-        startActivity(i);
-/*
+
+
         Handler startHandle = new Handler();
         startHandle.postDelayed(new Runnable() {
             @Override
@@ -24,11 +23,13 @@ public class SplashScreen extends AppCompatActivity {
                 if (AccessToken.getCurrentAccessToken() == null){
                     Intent i = new Intent(SplashScreen.this, Login.class);
                     startActivity(i);
+                    finish();
                 } else {
                     Intent i = new Intent(SplashScreen.this, MainActivity.class);
                     startActivity(i);
+                    finish();
                 }
             }
-        },1000);*/
+        },1000);
     }
 }
