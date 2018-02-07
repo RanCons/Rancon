@@ -2,6 +2,7 @@ package com.rancon;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,8 +17,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,6 +64,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     List<Address> address;
     Geocoder gc;
     String location;
+    String uD;
 
 
     public MapFragment() {
@@ -72,6 +77,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        Button sendCard = (Button) view.findViewById(R.id.sendButton);
+        sendCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent openSendCard = new Intent (getActivity(), SendCard.class);
+                openSendCard.putExtra("cardId",uD);
+                getActivity().startActivity(openSendCard);
+            }
+        });
 
         mapFragment = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map);
         if(mapFragment == null)
@@ -82,6 +96,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             ft.replace(R.id.map,mapFragment).commit();
         }
 
+        Bundle args = getArguments();
+        uD = args.getString("cardID", "Delhi");
+
+
+
         mapFragment.getMapAsync(this);
         return view;
     }
@@ -90,12 +109,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(final GoogleMap googleMap) {
 
-//               UserData userData = new UserData();
-//               nameList =  userData.getNameList();
-//               locationList = userData.getLocationList();
-//               pictureList = userData.getPictureList();
+        /* UserData userData = new UserData(cardId);*/
 
-        Bitmap bitmap1;
+        GiveUserDataIns gUDI = GiveUserDataIns.getInstance();
+        UserData userData =  gUDI.finalUserDataIns(uD);
+        nameList =  userData.getNameList();
+        locationList = userData.getLocationList();
+        pictureList = userData.getPictureList();
+
+      /*  Bitmap bitmap1;
         bitmap1 = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
         Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher_round);
         nameList = new ArrayList<String>();
@@ -109,7 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         locationList.add("Chennai");
         pictureList.add(bitmap1);
         pictureList.add(bitmap2);
-        pictureList.add(bitmap1);
+        pictureList.add(bitmap1);*/
 
         locCoordList = new ArrayList<LatLng>();
 
@@ -133,7 +155,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         Log.e("TAG",""+locCoordList.size());
         for(int i =0;i<locationList.size();i++){
 
-            imageBit = pictureList.get(i);
+            imageBit = /*pictureList.get(i)*/BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
             Marker marker = googleMap.addMarker(new MarkerOptions().position(locCoordList.get(i)).title(nameList.get(i)+"\n"+locationList.get(i)));
             marker.setTag(imageBit);
             mMarkerArray.add(marker);

@@ -18,7 +18,6 @@ public class UserData {
     public  UserData(String cardId) {
         this.cardId = cardId;
     }
-
     public List<String> getNameList() {
         return nameList;
     }

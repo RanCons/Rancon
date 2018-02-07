@@ -40,6 +40,8 @@ public class MapHelper extends AsyncTask {
         super();
         this.id = id;
         tempUser = new UserData(id);
+        GiveUserDataIns gUID = GiveUserDataIns.getInstance();
+        gUID.userDataList.add(tempUser);
     }
 
     @Override
@@ -51,6 +53,7 @@ public class MapHelper extends AsyncTask {
                 Log.e("TEST", dataSnapshot.toString());
                 for (DataSnapshot datasnap : dataSnapshot.getChildren()) {
                     recipientUidList.add(datasnap.getValue(String.class));
+
                 }
                 for (final String recipient : recipientUidList) {
 
@@ -68,7 +71,7 @@ public class MapHelper extends AsyncTask {
                                 JSONObject location = main.getJSONObject("location");
                                 String locat = location.getString("name");
                                 locationList.add(location.getString("name"));
-                                Log.e("TEST",name+"   "+ locat );
+                                Log.e("TEST987654321",name+"   "+ locat );
                             } catch (Exception e) {
                                 locationList.add("Delhi");
                                 e.printStackTrace();

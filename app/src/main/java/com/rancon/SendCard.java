@@ -53,6 +53,8 @@ public class SendCard extends AppCompatActivity {
     List<String> friendIdList = new ArrayList<>();
     SendButton sendButton;
     friendAdapter friendAdapter;
+    String uD;
+    int aCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class SendCard extends AppCompatActivity {
         friendRecycler.setLayoutManager(new LinearLayoutManager(this));
         friendAdapter = new friendAdapter(this);
         dwnFriendList();
-
+        uD = getIntent().getStringExtra("cardId");
 
         sendButton = (SendButton) findViewById(R.id.sendButton);
         CallbackManager callbackManager = CallbackManager.Factory.create();
@@ -119,14 +121,17 @@ public class SendCard extends AppCompatActivity {
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (aCount == 0){
                             DatabaseReference uu =  ref.child(friendIdList.get(position)).child("cardIds");
                             DatabaseReference u1 = uu.push();
-                        //    u1.setValue(userId + "a");//add card Id
+                            u1.setValue(uD);//add card Id
                             DatabaseReference cardsRef =  FirebaseDatabase.getInstance().getReference().child("cards");
-                          //  DatabaseReference c1 = cardsRef.child(userId + "a");//add card ID
-                            //DatabaseReference ca1 = c1.push();
-                         //   ca1.setValue(friendIdList.get(position));
+                            DatabaseReference c1 = cardsRef.child(uD);//add card ID
+                            DatabaseReference ca1 = c1.push();
+                            ca1.setValue(friendIdList.get(position));
                             }
+                        aCount = 1;
+                        }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {

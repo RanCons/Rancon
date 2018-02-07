@@ -1,6 +1,7 @@
 package com.rancon;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     RecyclerView cardRecycler;
     List<String> cardResult = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
-        MapHelper mp = new MapHelper("1152274011570212a");
-        mp.execute();
 
 
 
@@ -55,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void getAllCards() {
         final String userId = AccessToken.getCurrentAccessToken().getUserId();
-        final DatabaseReference ref =  FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("cardIds");
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("cardIds");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-              Log.e("TEST",dataSnapshot.toString());
-                for  (DataSnapshot datasnap: dataSnapshot.getChildren()){
+                Log.e("TEST", dataSnapshot.toString());
+                for (DataSnapshot datasnap : dataSnapshot.getChildren()) {
                     cardResult.add(datasnap.getValue(String.class));
                 }
                 cardRecycler.setAdapter(new cardAdapter(MainActivity.this));
@@ -74,9 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
     public class cardAdapter extends RecyclerView.Adapter<cardHolder> {
         LayoutInflater lf;
-        public cardAdapter(Context c){
+
+        public cardAdapter(Context c) {
             lf = LayoutInflater.from(c);
         }
+
         @Override
         public cardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = lf.inflate(R.layout.card_element, parent, false);
@@ -85,8 +88,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(cardHolder holder, int position) {
+        public void onBindViewHolder(cardHolder holder, final int position) {
             holder.tv.setText(cardResult.get(position));
+            MapHelper mp = new MapHelper(cardResult.get(position));
+            mp.execute();
+           holder.fV.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   Intent a = new Intent(MainActivity.this, MapActivity.class);
+                   a.putExtra("cardId",cardResult.get(position));
+                   startActivity(a);
+               }
+           });
         }
 
         @Override
@@ -97,22 +110,14 @@ public class MainActivity extends AppCompatActivity {
 
     public class cardHolder extends RecyclerView.ViewHolder {
         TextView tv;
+        FrameLayout fV;
 
         public cardHolder(View itemView) {
             super(itemView);
             tv = (TextView) itemView.findViewById(R.id.cardId);
+            fV = (FrameLayout) itemView.findViewById(R.id.main_card);
         }
     }
-
-
-
-
-
-
-
-
-
-
 
 
     public void garbage() {
